@@ -30,8 +30,6 @@ Try to keep projects to minimal
 4. Run the "Generate Programming File" process
 
 ## Log
-<<<<<<< HEAD
 
 Log all the old news
-=======
->>>>>>> 87be5c1365172992523b0d7cefe63c4823211506
+
