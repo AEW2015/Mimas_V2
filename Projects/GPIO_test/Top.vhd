@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------------------
 -- Company: 
--- Engineer: 
+-- Engineer: Andrew Wilson
 -- 
 -- Create Date:    07:50:38 07/20/2016 
 -- Design Name: 
@@ -59,7 +59,7 @@ signal counter, counter_next : unsigned(51 downto 0) := (others=>'0');
 begin
 rst <= not Switch(0);
 process (CLK_100MHz,rst)
-begin
+begin 
 	if (rst = '1') then
 		counter <= (others=>'0');
 	elsif rising_edge(CLK_100MHz) then
