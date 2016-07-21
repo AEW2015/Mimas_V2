@@ -1,5 +1,5 @@
 #Documents
-* [Numato Mimas V2 User Guide]{https://github.com/AEW2015/Mimas_V2/blob/master/Docs/MimasV2UserManualV9.pdf "MimasV2UserManualV9.pdf"}
+* [Numato Mimas V2 User Guide](https://github.com/AEW2015/Mimas_V2/blob/master/Docs/MimasV2UserManualV9.pdf "MimasV2UserManualV9.pdf")
 * [Ram Documentation](https://github.com/AEW2015/Mimas_V2/blob/master/Docs/W949D6CBHX6E.pdf "W949D6CBHX6E.pdf").
 * [LC3 Processor Example](https://github.com/AEW2015/Mimas_V2/tree/master/Docs/LC3 "LIttle Computer 3").
 
