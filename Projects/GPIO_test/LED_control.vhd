@@ -35,6 +35,7 @@ entity LED_control is
 			RST : in STD_LOGIC;
 			CLK : in STD_LOGIC;
 			LED_INPUT : in  STD_LOGIC_VECTOR (31 downto 0);
+			LED_en : in STD_LOGIC_VECTOR (7 downto 0);
 			GPIO_LED : out  STD_LOGIC_VECTOR (7 downto 0));
 end LED_control;
 
@@ -69,12 +70,12 @@ led_7 <= unsigned(LED_INPUT(31 downto 28));
 
 
 
-process (led_counter,led_reg,
+process (led_counter,led_reg,LED_en,
 		led_0, led_1, led_2, led_3, led_4, led_5, led_6, led_7)
 begin
 	led_reg_next <= led_reg;
 	if(led_counter = 0) then
-		led_reg_next <= (others=>'1');
+		led_reg_next <= LED_en;
 	end if;
 	if(led_counter = led_0) then
 		led_reg_next(0) <= '0';

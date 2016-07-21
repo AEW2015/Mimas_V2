@@ -38,12 +38,62 @@ entity Switch_core is
 end Switch_core;
 
 architecture Behavioral of Switch_core is
-	constant counter_Size : integer := 20;
-	signal counter_out, counter_out_next : STD_LOGIC_VECTOR(counter_size DOWNTO 0) := (OTHERS => '0');
-	signal flip_flops, flip_flops_ne : STD_LOGIC_VECTOR(2 downto 0) := (others=>'0');
-	signal counter_set : STD_LOGIC;
+component button_debounce is
+    Port ( Rst : in  STD_LOGIC;
+           Clk : in  STD_LOGIC;
+           Button_in : in  STD_LOGIC;
+           Button_out : out  STD_LOGIC);
+end component;
+signal inverted_switch : STD_LOGIC_VECTOR(5 downto 0);
 	
 begin
+inverted_switch <= not GPIO_Switch;
+
+-- need to figure out how to debounce the best way...
+Switch_0 : button_debounce
+	port map(
+			RST => rst,
+			CLK =>CLk,
+			Button_in =>inverted_switch(0),
+			Button_out => Switch_Out(0)
+	);
+Switch_1 : button_debounce
+	port map(
+			RST => rst,
+			CLK =>CLk,
+			Button_in =>inverted_switch(1),
+			Button_out => Switch_Out(1)
+	);
+Switch_2 : button_debounce
+	port map(
+			RST => rst,
+			CLK =>CLk,
+			Button_in =>inverted_switch(2),
+			Button_out => Switch_Out(2)
+	);
+Switch_3 : button_debounce
+	port map(
+			RST => rst,
+			CLK =>CLk,
+			Button_in =>inverted_switch(3),
+			Button_out => Switch_Out(3)
+	);
+Switch_4 : button_debounce
+	port map(
+			RST => rst,
+			CLK =>CLk,
+			Button_in =>inverted_switch(4),
+			Button_out => Switch_Out(4)
+	);
+Switch_5 : button_debounce
+	port map(
+			RST => rst,
+			CLK =>CLk,
+			Button_in =>inverted_switch(5),
+			Button_out => Switch_Out(5)
+	);
+
+
 
 
 end Behavioral;

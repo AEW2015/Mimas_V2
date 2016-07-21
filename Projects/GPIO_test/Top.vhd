@@ -48,14 +48,24 @@ component LED_control is
 			RST : in STD_LOGIC;
 			CLK : in STD_LOGIC;
 			LED_INPUT : in  STD_LOGIC_VECTOR (31 downto 0);
+			LED_en : in STD_LOGIC_VECTOR (7 downto 0);
 			GPIO_LED : out  STD_LOGIC_VECTOR (7 downto 0)
 		);
 end component;
+component Switch_core is
+    Port ( 
+			RST : in STD_LOGIC;
+			CLK : in STD_LOGIC;
+			GPIO_Switch : in  STD_LOGIC_VECTOR (5 downto 0);
+           Switch_Out : out  STD_LOGIC_VECTOR (5 downto 0));
+end component;
+
 
 
 signal temp_1, temp_2,rst : STD_LOGIC := '1';
 signal led_input : STD_LOGIC_VECTOR(31 downto 0) := X"0257ACEF";
 signal counter, counter_next : unsigned(51 downto 0) := (others=>'0');
+signal Switch_reg : STD_LOGIC_VECTOR(5 downto 0);
 begin
 rst <= not Switch(0);
 process (CLK_100MHz,rst)
@@ -74,13 +84,24 @@ begin
 			temp_2 <= not temp_2;
 	end if;
 end process;
-led_input <= STD_LOGIC_VECTOR(counter(49 downto 18));
+led_input <= x"FFFFFFFF" when Switch_reg(1) = '1' else
+					STD_LOGIC_VECTOR(counter(49 downto 18));
+
+
 led_control_i : LED_control
 	port map(
 			RST => rst,
 			CLK =>CLK_100MHz,
 			LED_INPUT =>led_input,
+			LED_en => not DPSwitch,
 			GPIO_LED =>LED
+	);
+switch_core_i : Switch_core
+	port map(
+			RST => rst,
+			CLK => CLK_100MHz,
+			GPIO_Switch => Switch,
+			Switch_Out => Switch_reg
 	);
 
 end Behavioral;
