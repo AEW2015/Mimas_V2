@@ -7,14 +7,12 @@ Try to keep projects to minimal
 
 1. Open the Xilinx ISE Project Navigator
 2. Create a new project (File -> New Project...)
-* The "Top-level source type" is "HDL"
-* Family: Spartan6
-* Device: XC6SLX9
-* Package: CSG324
-* Speed: -2
-* Preferred Language: VHDL
-
-
+    -   The "Top-level source type" is "HDL"
+    -   Family: Spartan6
+    -   Device: XC6SLX9
+    -   Package: CSG324
+    -   Speed: -2
+    -   Preferred Language: VHDL
 3. Open the properties for the "Generate Programming File" process
-* Under "General Options", enable "Create Binary Configuration File"
+    -   Under "General Options", enable "Create Binary Configuration File"
 4. Run the "Generate Programming File" process
