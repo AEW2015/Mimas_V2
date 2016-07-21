@@ -3,10 +3,18 @@ Welcome To my GitHub
 I will keep all my files for the Mimas V2 on here
 
 Try to keep projects to minimal
-- vhdl, .ucf, .mhs, .ngc(?)
+- vhdl, .ucf
 
-We will see how it goes...
+1. Open the Xilinx ISE Project Navigator
+2. Create a new project (File -> New Project...)
+* The "Top-level source type" is "HDL"
+* Family: Spartan6
+* Device: XC6SLX9
+* Package: CSG324
+* Speed: -2
+* Preferred Language: VHDL
 
-If a project ends up getting too big, we will give it its own repository
 
-Or add them as submodules
+3. Open the properties for the "Generate Programming File" process
+* Under "General Options", enable "Create Binary Configuration File"
+4. Run the "Generate Programming File" process
