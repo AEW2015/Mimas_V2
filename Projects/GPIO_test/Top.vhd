@@ -34,9 +34,9 @@ entity Top is
     Port ( 
 			CLK_100MHz : in STD_LOGIC;
 			CLK_12MHz : in STD_LOGIC;
-			LED : out  STD_LOGIC_VECTOR (7 downto 0);
-			DPSwitch: in STD_LOGIC_VECTOR(7 downto 0);
-			Switch : in STD_LOGIC_VECTOR(5 downto 0)
+			GPIO_LED : out  STD_LOGIC_VECTOR (7 downto 0);
+			GPIO_DPSwitch: in STD_LOGIC_VECTOR(7 downto 0);
+			GPIO_Switch : in STD_LOGIC_VECTOR(5 downto 0)
 		);
 end Top;
 
@@ -60,31 +60,41 @@ component Switch_core is
            Switch_Out : out  STD_LOGIC_VECTOR (5 downto 0));
 end component;
 
+signal rst : STD_LOGIC;
 
-
-signal temp_1, temp_2,rst : STD_LOGIC := '1';
+signal DPSwitch : STD_LOGIC_VECTOR (7 downto 0);
 signal led_input : STD_LOGIC_VECTOR(31 downto 0) := X"0257ACEF";
 signal counter, counter_next : unsigned(51 downto 0) := (others=>'0');
-signal Switch_reg : STD_LOGIC_VECTOR(5 downto 0);
+signal Switch : STD_LOGIC_VECTOR(5 downto 0);
 begin
-rst <= not Switch(0);
+rst <= not GPIO_Switch(0);
+DPSwitch <= not GPIO_DPSwitch;
+
+
 process (CLK_100MHz,rst)
 begin 
 	if (rst = '1') then
 		counter <= (others=>'0');
 	elsif rising_edge(CLK_100MHz) then
-			temp_1 <= not temp_1;
 			counter <= counter_next;
 	end if;
 end process;
+
 counter_next<=counter+1;
-process (CLK_12MHz)
-begin
-	if rising_edge(CLK_12MHz) then
-			temp_2 <= not temp_2;
-	end if;
-end process;
-led_input <= x"FFFFFFFF" when Switch_reg(1) = '1' else
+
+
+
+-- process (CLK_12MHz)
+-- begin
+	-- if rising_edge(CLK_12MHz) then
+			-- temp_2 <= not temp_2;
+	-- end if;
+-- end process;
+
+
+
+
+led_input <= x"FFFFFFFF" when Switch(1) = '1' else
 					STD_LOGIC_VECTOR(counter(49 downto 18));
 
 
@@ -93,15 +103,15 @@ led_control_i : LED_control
 			RST => rst,
 			CLK =>CLK_100MHz,
 			LED_INPUT =>led_input,
-			LED_en => not DPSwitch,
-			GPIO_LED =>LED
+			LED_en => DPSwitch,
+			GPIO_LED =>GPIO_LED
 	);
 switch_core_i : Switch_core
 	port map(
 			RST => rst,
 			CLK => CLK_100MHz,
-			GPIO_Switch => Switch,
-			Switch_Out => Switch_reg
+			GPIO_Switch => GPIO_Switch,
+			Switch_Out => Switch
 	);
 
 end Behavioral;
