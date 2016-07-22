@@ -59,6 +59,11 @@ component Switch_core is
 			GPIO_Switch : in  STD_LOGIC_VECTOR (5 downto 0);
            Switch_Out : out  STD_LOGIC_VECTOR (5 downto 0));
 end component;
+component DPSwitch_core is
+    Port ( GPIO_DPSwitch : in  STD_LOGIC_VECTOR (7 downto 0);
+           DPSwitch_out : out  STD_LOGIC_VECTOR (7 downto 0)
+		   );
+end component;
 
 signal rst : STD_LOGIC;
 
@@ -68,7 +73,6 @@ signal counter, counter_next : unsigned(51 downto 0) := (others=>'0');
 signal Switch : STD_LOGIC_VECTOR(5 downto 0);
 begin
 rst <= not GPIO_Switch(0);
-DPSwitch <= not GPIO_DPSwitch;
 
 
 process (CLK_100MHz,rst)
@@ -95,6 +99,10 @@ counter_next<=counter+1;
 
 
 led_input <= x"FFFFFFFF" when Switch(1) = '1' else
+					x"FEDCBA98" when Switch(2) = '1' else
+					x"01234567" when Switch(3) = '1' else
+					not STD_LOGIC_VECTOR(counter(49 downto 18)) when Switch(4) = '1' else
+					x"DEADBEEF" when Switch(5) = '1' else
 					STD_LOGIC_VECTOR(counter(49 downto 18));
 
 
@@ -113,6 +121,10 @@ switch_core_i : Switch_core
 			GPIO_Switch => GPIO_Switch,
 			Switch_Out => Switch
 	);
-
+DPSwitch_core_i : DPSwitch_core
+	port map(
+			GPIO_DPSwitch => GPIO_DPSwitch,
+			DPSwitch_out => DPSwitch
+	);
 end Behavioral;
 
