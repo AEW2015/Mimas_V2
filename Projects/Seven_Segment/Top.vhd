@@ -68,8 +68,9 @@ component DPSwitch_core is
 end component;
 component seven_segment_core is
     Port ( 
+			RST : in STD_LOGIC;
 			CLK : in STD_LOGIC;
-			Data_in : in  STD_LOGIC_VECTOR (31 downto 0);
+			Data_in : in  STD_LOGIC_VECTOR (15 downto 0);
            Dp_in : in  STD_LOGIC_VECTOR (2 downto 0);
            Seven_out : out  STD_LOGIC_VECTOR (6 downto 0);
 		   Dp_out: out STD_LOGIC;
@@ -113,8 +114,9 @@ SevenSegment <= DPSwitch;
 
 seven_core_i : seven_segment_core
     Port map( 
+			RST => RST,
 			CLK => CLK_100MHz,
-			Data_in => X"FFFFFFFF",
+			Data_in => X"FFFF",
            Dp_in  => "101",
            Seven_out => tmp(6 downto 0),
 		   Dp_out => tmp(7),
