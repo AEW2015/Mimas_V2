@@ -36,7 +36,9 @@ entity Top is
 			CLK_12MHz : in STD_LOGIC;
 			GPIO_LED : out  STD_LOGIC_VECTOR (7 downto 0);
 			GPIO_DPSwitch: in STD_LOGIC_VECTOR(7 downto 0);
-			GPIO_Switch : in STD_LOGIC_VECTOR(5 downto 0)
+			GPIO_Switch : in STD_LOGIC_VECTOR(5 downto 0);
+			SevenSegment: out STD_LOGIC_VECTOR(7 downto 0);
+			SevenSegmentEnable : out STD_LOGIC_VECTOR(2 downto 0)
 		);
 end Top;
 
@@ -64,10 +66,19 @@ component DPSwitch_core is
            DPSwitch_out : out  STD_LOGIC_VECTOR (7 downto 0)
 		   );
 end component;
+component seven_segment_core is
+    Port ( 
+			CLK : in STD_LOGIC;
+			Data_in : in  STD_LOGIC_VECTOR (31 downto 0);
+           Dp_in : in  STD_LOGIC_VECTOR (2 downto 0);
+           Seven_out : out  STD_LOGIC_VECTOR (6 downto 0);
+		   Dp_out: out STD_LOGIC;
+           Enable_out : out  STD_LOGIC_VECTOR (2 downto 0));
+end component;
 
 signal rst : STD_LOGIC;
 
-signal DPSwitch : STD_LOGIC_VECTOR (7 downto 0);
+signal DPSwitch, tmp : STD_LOGIC_VECTOR (7 downto 0);
 signal led_input : STD_LOGIC_VECTOR(31 downto 0) := X"0257ACEF";
 signal counter, counter_next : unsigned(51 downto 0) := (others=>'0');
 signal Switch : STD_LOGIC_VECTOR(5 downto 0);
@@ -97,7 +108,18 @@ counter_next<=counter+1;
 
 
 led_input <= x"FFFFFFFF";
+SevenSegment <= DPSwitch;
 
+
+seven_core_i : seven_segment_core
+    Port map( 
+			CLK => CLK_100MHz,
+			Data_in => X"FFFFFFFF",
+           Dp_in  => "101",
+           Seven_out => tmp(6 downto 0),
+		   Dp_out => tmp(7),
+           Enable_out => SevenSegmentEnable
+	);
 
 led_control_i : LED_control
 	port map(

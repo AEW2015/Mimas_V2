@@ -30,9 +30,12 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity seven_segment_core is
-    Port ( Data_in : in  STD_LOGIC_VECTOR (31 downto 0);
+    Port ( 
+			CLK : in STD_LOGIC;
+			Data_in : in  STD_LOGIC_VECTOR (31 downto 0);
            Dp_in : in  STD_LOGIC_VECTOR (2 downto 0);
            Seven_out : out  STD_LOGIC_VECTOR (6 downto 0);
+		   Dp_out: out STD_LOGIC;
            Enable_out : out  STD_LOGIC_VECTOR (2 downto 0));
 end seven_segment_core;
 
@@ -40,6 +43,9 @@ architecture Behavioral of seven_segment_core is
 
 begin
 
+Dp_out <= '1';
+Enable_out <= "010";
+Seven_out <= "0001111";
 
 end Behavioral;
 
