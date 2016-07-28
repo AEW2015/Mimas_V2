@@ -109,17 +109,17 @@ counter_next<=counter+1;
 
 
 led_input <= x"FFFFFFFF";
-
+SevenSegment <= DPSwitch;
 
 
 seven_core_i : seven_segment_core
     Port map( 
 			RST => RST,
 			CLK => CLK_100MHz,
-			Data_in =>DPSwitch & DPSwitch,
+			Data_in => X"FFFF",
            Dp_in  => "101",
-           Seven_out => SevenSegment(6 downto 0),
-		   Dp_out => SevenSegment(7),
+           Seven_out => tmp(6 downto 0),
+		   Dp_out => tmp(7),
            Enable_out => SevenSegmentEnable
 	);
 
