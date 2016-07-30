@@ -37,7 +37,8 @@ entity Top is
 			GPIO_LED : out  STD_LOGIC_VECTOR (7 downto 0);
 			GPIO_DPSwitch: in STD_LOGIC_VECTOR(7 downto 0);
 			GPIO_Switch : in STD_LOGIC_VECTOR(5 downto 0);
-			SevenSegment: out STD_LOGIC_VECTOR(7 downto 0);
+			SevenSegment: out STD_LOGIC_VECTOR(6 downto 0);
+			DPout: out STD_LOGIC;
 			SevenSegmentEnable : out STD_LOGIC_VECTOR(2 downto 0)
 		);
 end Top;
@@ -109,7 +110,8 @@ counter_next<=counter+1;
 
 
 led_input <= x"FFFFFFFF";
-SevenSegment <= DPSwitch;
+SevenSegment <= DPSwitch(7 downto 1);
+DPout <= DPSwitch(0);
 
 
 seven_core_i : seven_segment_core

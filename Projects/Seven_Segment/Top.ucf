@@ -84,14 +84,14 @@ CONFIG VCCAUX = "3.3" ;
 ###################################################################################################################################################
 #                                                 DIP Switches                                                                                    #
 ################################################################################################################################################### 
-    NET "GPIO_DPSWITCH[7]"                LOC = C17     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 8
-    NET "GPIO_DPSWITCH[6]"                LOC = C18     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 7
-    NET "GPIO_DPSWITCH[5]"                LOC = D17     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 6
-    NET "GPIO_DPSWITCH[4]"                LOC = D18     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 5
-    NET "GPIO_DPSWITCH[3]"                LOC = E18     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 4
-    NET "GPIO_DPSWITCH[2]"                LOC = E16     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 3
-    NET "GPIO_DPSWITCH[1]"                LOC = F18     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 2
-    NET "GPIO_DPSWITCH[0]"                LOC = F17     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 1
+    NET "GPIO_DPSWITCH[0]"                LOC = C17     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 8
+    NET "GPIO_DPSWITCH[1]"                LOC = C18     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 7
+    NET "GPIO_DPSWITCH[2]"                LOC = D17     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 6
+    NET "GPIO_DPSWITCH[3]"                LOC = D18     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 5
+    NET "GPIO_DPSWITCH[4]"                LOC = E18     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 4
+    NET "GPIO_DPSWITCH[5]"                LOC = E16     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 3
+    NET "GPIO_DPSWITCH[6]"                LOC = F18     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 2
+    NET "GPIO_DPSWITCH[7]"                LOC = F17     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP;  #DP 1
      
 ###################################################################################################################################################
 #                                              Push Buttons Switches                                                                              #
@@ -106,14 +106,14 @@ CONFIG VCCAUX = "3.3" ;
 ###################################################################################################################################################
 #                                                    GPIO_LEDs                                                                                         #
 ################################################################################################################################################### 
-    NET "GPIO_LED[0]"                     LOC = P15     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;  #D1
-    NET "GPIO_LED[1]"                     LOC = P16     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;  #D2
-    NET "GPIO_LED[2]"                     LOC = N15     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;  #D3
-    NET "GPIO_LED[3]"                     LOC = N16     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;  #D4
-    NET "GPIO_LED[4]"                     LOC = U17     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;  #D5
-    NET "GPIO_LED[5]"                     LOC = U18     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;  #D6
-    NET "GPIO_LED[6]"                     LOC = T17     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;  #D7
-    NET "GPIO_LED[7]"                     LOC = T18     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;  #D8
+    NET "GPIO_LED[7]"                     LOC = P15     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;  #D1
+    NET "GPIO_LED[6]"                     LOC = P16     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;  #D2
+    NET "GPIO_LED[5]"                     LOC = N15     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;  #D3
+    NET "GPIO_LED[4]"                     LOC = N16     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;  #D4
+    NET "GPIO_LED[3]"                     LOC = U17     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;  #D5
+    NET "GPIO_LED[2]"                     LOC = U18     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;  #D6
+    NET "GPIO_LED[1]"                     LOC = T17     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;  #D7
+    NET "GPIO_LED[0]"                     LOC = T18     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;  #D8
 
 ###################################################################################################################################################
 #                                                   Micro SD Card                                                                                 #
