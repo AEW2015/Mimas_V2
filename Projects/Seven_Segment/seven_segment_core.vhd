@@ -42,17 +42,17 @@ end seven_segment_core;
 
 architecture Behavioral of seven_segment_core is
 signal clk_counter,clk_counter_next : unsigned(31 downto 0):=(others=>'0');
-signal display_counter,display_counter_next : unsigned(5 downto 0):= (others=>'0');
+signal display_counter,display_counter_next : unsigned(3 downto 0):= (others=>'0');
+signal icon_counter,icon_counter_next : unsigned(1 downto 0):= (others=>'0');
 signal display_data : STD_LOGIC_VECTOR(3 downto 0);
 signal seven_display : STD_LOGIC_VECTOR(6 downto 0);
-signal Enable_tmp,Enable_reg, Enable_next, Dp_tmp :STD_LOGIC_VECTOR(2 downto 0):= (others=>'0');
+signal Enable_tmp,Enable_reg, Enable_next :STD_LOGIC_VECTOR(2 downto 0):= (others=>'0');
+signal Dp_tmp : STD_LOGIC;
 begin
 --TODO:	Negate both output signal and redo logic
+					--Done
 --				Change timing so zero is off and 16 is full.
-
-
-
-
+					--Done
 
 Dp_out <= not Dp_tmp;
 Seven_out <= not seven_display;
@@ -63,31 +63,55 @@ begin
 	if(rst = '1') then
 		clk_counter <= (others=>'0');
 		display_counter <= (others=>'0');
+		icon_counter <= (others=>'0');
 		Enable_reg <= (others=>'0');
 	elsif rising_edge(clk) then
 		clk_counter <= clk_counter_next;
 		display_counter <= display_counter_next;
+		icon_counter <= icon_counter_next;
 		Enable_reg <= Enable_next;
 	end if;
 end process;
 
-clk_counter_next <= (others=>'0') when clk_counter = 1000 else
-								clk_counter + 1;
+-- clk_counter_next <= (others=>'0') when clk_counter = 1000 else
+								-- clk_counter + 1;
 								
-display_counter_next <= (others=>'0') when clk_counter = 1000 and display_counter = "101111" else
-										display_counter + 1 when clk_counter = 1000 else
-										display_counter;
-										
-Enable_tmp <= "001" when display_counter(5 downto 4) ="00" else
-						"010" when display_counter(5 downto 4) ="01" else
+-- display_counter_next <= (others=>'0') when clk_counter = 1000 and display_counter = "101111" else
+										-- display_counter + 1 when clk_counter = 1000 else
+										-- display_counter;
+		
+process (clk_counter,display_counter,icon_counter)
+begin
+	clk_counter_next <= clk_counter + 1;
+	display_counter_next <= display_counter;
+	icon_counter_next <= icon_counter;
+	if (clk_counter = 1000) then
+		clk_counter_next <= (others=>'0');
+		display_counter_next <= display_counter + 1;
+		if (display_counter = 14) then
+			display_counter_next <= (others=>'0');
+			icon_counter_next <= icon_counter+1;
+			if(icon_counter = 2) then
+				icon_counter_next  <= (others=>'0');
+			end if;
+		end if;
+	end if;
+
+end process;
+
+
+
+		
+Enable_tmp <= "001" when icon_counter ="00" else
+						"010" when icon_counter ="01" else
 						"100";
 
-display_data <= Data_in(3 downto 0) when display_counter(5 downto 4) ="00" else
-						 Data_in(7 downto 4) when display_counter(5 downto 4) ="01" else
+display_data <= Data_in(3 downto 0) when icon_counter ="00" else
+						 Data_in(7 downto 4) when icon_counter ="01" else
 						 Data_in(11 downto 8);
 						 
-Dp_tmp <=Dp_in(0) when display_counter(5 downto 4) ="00" else
-				Dp_in(1) when display_counter(5 downto 4) ="01" else
+Dp_tmp <=Dp_in(0) when icon_counter ="00" else
+				Dp_in(1) when icon_counter ="01" else
 				Dp_in(2);
 
 with display_data select seven_display <=
@@ -112,10 +136,10 @@ with display_data select seven_display <=
 process (display_counter,Enable_reg,Enable_tmp,Data_in)
 begin
 	Enable_next <= Enable_reg;
-	if(display_counter(3 downto 0) = 0) then
+	if(display_counter = 0) then
 		Enable_next <= Enable_tmp;
 	end if;
-	if(display_counter(3 downto 0) = unsigned(Data_in(15 downto 12) ))then
+	if(display_counter = unsigned(Data_in(15 downto 12) ))then
 		Enable_next <= (others=>'0');
 	end if;
 end process;	
