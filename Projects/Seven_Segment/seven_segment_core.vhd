@@ -45,17 +45,19 @@ signal clk_counter,clk_counter_next : unsigned(31 downto 0):=(others=>'0');
 signal display_counter,display_counter_next : unsigned(5 downto 0):= (others=>'0');
 signal display_data : STD_LOGIC_VECTOR(3 downto 0);
 signal seven_display : STD_LOGIC_VECTOR(6 downto 0);
-signal Enable_tmp,Enable_reg, Enable_next :STD_LOGIC_VECTOR(2 downto 0):= (others=>'0');
+signal Enable_tmp,Enable_reg, Enable_next, Dp_tmp :STD_LOGIC_VECTOR(2 downto 0):= (others=>'0');
 begin
 --TODO:	Negate both output signal and redo logic
 --				Change timing so zero is off and 16 is full.
 
-Dp_out <=Dp_in(0) when display_counter(5 downto 4) ="00" else
-				Dp_in(1) when display_counter(5 downto 4) ="01" else
-				Dp_in(2);
 
-Seven_out <= seven_display;
-Enable_out <= Enable_reg;
+
+
+
+Dp_out <= not Dp_tmp;
+Seven_out <= not seven_display;
+Enable_out <= not Enable_reg;
+
 process (clk,rst)
 begin
 	if(rst = '1') then
@@ -76,31 +78,35 @@ display_counter_next <= (others=>'0') when clk_counter = 1000 and display_counte
 										display_counter + 1 when clk_counter = 1000 else
 										display_counter;
 										
-Enable_tmp <= "110" when display_counter(5 downto 4) ="00" else
-						"101" when display_counter(5 downto 4) ="01" else
-						"011";
+Enable_tmp <= "001" when display_counter(5 downto 4) ="00" else
+						"010" when display_counter(5 downto 4) ="01" else
+						"100";
 
 display_data <= Data_in(3 downto 0) when display_counter(5 downto 4) ="00" else
 						 Data_in(7 downto 4) when display_counter(5 downto 4) ="01" else
 						 Data_in(11 downto 8);
+						 
+Dp_tmp <=Dp_in(0) when display_counter(5 downto 4) ="00" else
+				Dp_in(1) when display_counter(5 downto 4) ="01" else
+				Dp_in(2);
 
 with display_data select seven_display <=
-    "1000000" when "0000",
-	"1111001" when "0001",
-    "0100100" when "0010",
-    "0110000" when "0011",
-	"0011001" when "0100",
-    "0010010" when "0101" ,
-    "0000010" when "0110",
-	"1111000" when "0111",
-    "0000000" when "1000",
-    "0011000" when "1001",
-	"0001000" when "1010",
-    "0000011" when "1011",
-    "1000110" when "1100",
-	"0100001" when "1101",
-    "0000110" when "1110" ,
-    "0001110" when others;
+    "1111110" when "0000",
+	"0110000" when "0001",
+    "1101101" when "0010",
+    "1111001" when "0011",
+	"0110011" when "0100",
+    "1011011" when "0101" ,
+    "1011111" when "0110",
+	"1110000" when "0111",
+    "1111111" when "1000",
+    "1110011" when "1001",
+	"1110111" when "1010",
+    "0011111" when "1011",
+    "1001110" when "1100",
+	"0111101" when "1101",
+    "1001111" when "1110" ,
+    "1000111" when others;
 	
 
 process (display_counter,Enable_reg,Enable_tmp,Data_in)
@@ -110,7 +116,7 @@ begin
 		Enable_next <= Enable_tmp;
 	end if;
 	if(display_counter(3 downto 0) = unsigned(Data_in(15 downto 12) ))then
-		Enable_next <= (others=>'1');
+		Enable_next <= (others=>'0');
 	end if;
 end process;	
 
