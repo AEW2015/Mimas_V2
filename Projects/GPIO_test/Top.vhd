@@ -72,7 +72,7 @@ signal led_input : STD_LOGIC_VECTOR(31 downto 0) := X"0257ACEF";
 signal counter, counter_next : unsigned(51 downto 0) := (others=>'0');
 signal Switch : STD_LOGIC_VECTOR(5 downto 0);
 begin
-rst <= not GPIO_Switch(0);
+rst <= '0';
 
 
 process (CLK_100MHz,rst)
