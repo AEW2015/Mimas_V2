@@ -36,6 +36,7 @@ entity Top is
 			CLK_12MHz : in STD_LOGIC;
 			GPIO_LED : out  STD_LOGIC_VECTOR (7 downto 0);
 			GPIO_DPSwitch: in STD_LOGIC_VECTOR(7 downto 0);
+			SYS_RST: in STD_LOGIC;
 			GPIO_Switch : in STD_LOGIC_VECTOR(5 downto 0)
 		);
 end Top;
@@ -67,12 +68,12 @@ end component;
 
 signal rst : STD_LOGIC;
 
-signal DPSwitch : STD_LOGIC_VECTOR (7 downto 0);
+signal DPSwitch,tmp_GPIO_LED : STD_LOGIC_VECTOR (7 downto 0);
 signal led_input : STD_LOGIC_VECTOR(31 downto 0) := X"0257ACEF";
 signal counter, counter_next : unsigned(51 downto 0) := (others=>'0');
 signal Switch : STD_LOGIC_VECTOR(5 downto 0);
 begin
-rst <= '0';
+rst <= SYS_RST;
 
 
 process (CLK_100MHz,rst)
@@ -96,7 +97,7 @@ counter_next<=counter+1;
 -- end process;
 
 
-
+GPIO_LED <= '1' & tmp_GPIO_LED(6 downto 0);
 
 led_input <= x"FFFFFFFF" when Switch(1) = '1' else
 					x"FEDCBA98" when Switch(2) = '1' else
@@ -112,7 +113,7 @@ led_control_i : LED_control
 			CLK =>CLK_100MHz,
 			LED_INPUT =>led_input,
 			LED_en => DPSwitch,
-			GPIO_LED =>GPIO_LED
+			GPIO_LED =>tmp_GPIO_LED
 	);
 switch_core_i : Switch_core
 	port map(
