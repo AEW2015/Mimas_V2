@@ -85,7 +85,7 @@ begin
 	clk_counter_next <= clk_counter + 1;
 	display_counter_next <= display_counter;
 	icon_counter_next <= icon_counter;
-	if (clk_counter = 100000) then
+	if (clk_counter = 10000) then
 		clk_counter_next <= (others=>'0');
 		display_counter_next <= display_counter + 1;
 		if (display_counter = 14) then
