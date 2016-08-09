@@ -50,6 +50,7 @@ component Transmitter_Core is
 	port( 
 			RST : in STD_LOGIC;
 			CLK : in STD_LOGIC;
+			BIT_EN : in STD_LOGIC;
 			Data_TX : in  STD_LOGIC_VECTOR (7 downto 0);
          Send : in  STD_LOGIC;
 			TX_busy : out  STD_LOGIC;
@@ -60,6 +61,7 @@ component Reciever_Core is
 	port( 
 			RST : in STD_LOGIC;
 			CLK : in STD_LOGIC;
+			BIT_EN : in STD_LOGIC;
 			Data_RX : out  STD_LOGIC_VECTOR (7 downto 0);
          Rec : out  STD_LOGIC;
          RX : in  STD_LOGIC
@@ -79,16 +81,36 @@ return m;
 end log2c;
 ---------------------------------------------------
 constant BIT_COUNTER_MAX_VAL : Natural := CLK_RATE/BAUD_RATE/16 - 1;
+--div by 16 to find its half mark
 constant BIT_COUNTER_BITS : Natural := log2c(BIT_COUNTER_MAX_VAL);
-
-
+signal bit_timer,bit_timer_next : unsigned(BIT_COUNTER_BITS-1 downto 0);
+signal BIT_EN: STD_LOGIC;
 
 
 begin
+
+
+process (CLK,RST)
+begin 
+	if (RST = '1') then
+		bit_timer <= (others=>'0');
+	elsif rising_edge(CLK) then
+		bit_timer <= bit_timer_next;
+	end if;
+end process;
+
+
+bit_timer_next<= (others=>'0') when (bit_timer = BIT_COUNTER_MAX_VAL) else
+						bit_timer+1;
+
+BIT_EN <= '1' when bit_timer = BIT_COUNTER_MAX_VAL else
+				'0';
+
 Transmitter_Core_i : Transmitter_Core
     Port map( 
 			RST => RST,
 			CLK =>CLk,
+			BIT_EN => BIT_EN,
 			Data_TX => Data_TX,
 			Send => Send,
 			TX_busy => TX_busy,
@@ -98,6 +120,7 @@ Reciever_Core_i : Reciever_Core
     Port map( 
 			RST => RST,
 			CLK =>CLk,
+			BIT_EN => BIT_EN,
 			Data_RX => Data_RX,
 			Rec => Rec,
 			RX  => RX

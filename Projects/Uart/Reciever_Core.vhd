@@ -32,6 +32,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity Reciever_Core is
     Port ( RST : in STD_LOGIC;
 			  CLK : in STD_LOGIC;
+			  BIT_EN : in STD_LOGIC;
 			  Data_RX : out  STD_LOGIC_VECTOR (7 downto 0);
            Rec : out  STD_LOGIC;
            RX : in  STD_LOGIC);
