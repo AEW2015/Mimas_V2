@@ -30,7 +30,9 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity Reciever_Core is
-    Port ( Data_RX : out  STD_LOGIC_VECTOR (7 downto 0);
+    Port ( RST : in STD_LOGIC;
+			  CLK : in STD_LOGIC;
+			  Data_RX : out  STD_LOGIC_VECTOR (7 downto 0);
            Rec : out  STD_LOGIC;
            RX : in  STD_LOGIC);
 end Reciever_Core;

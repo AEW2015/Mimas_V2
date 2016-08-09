@@ -77,6 +77,20 @@ component seven_segment_core is
 		   Dp_out: out STD_LOGIC;
            Enable_out : out  STD_LOGIC_VECTOR (2 downto 0));
 end component;
+component Uart_core is
+    Port ( 
+	 		  RST : in STD_LOGIC;
+			  CLK : in STD_LOGIC;
+			  Data_TX : in  STD_LOGIC_VECTOR (7 downto 0);
+           Data_RX : out  STD_LOGIC_VECTOR (7 downto 0);
+           Send : in  STD_LOGIC;
+			  RX : in  STD_LOGIC;
+			  TX : out  STD_LOGIC;
+           Rec : out  STD_LOGIC);
+end component;
+
+
+
 
 signal rst : STD_LOGIC;
 
@@ -111,6 +125,17 @@ counter_next<=counter+1;
 
 led_input <= x"FFFFFFFF";
 
+Uart_core_i : Uart_core
+    Port map( 
+			RST => RST,
+			CLK => CLK_100MHz,
+			Data_TX => "11111111",
+         Data_RX => open,
+         Send => '0',
+			RX => '1',
+			TX => open,
+         Rec => open
+	);
 
 
 seven_core_i : seven_segment_core

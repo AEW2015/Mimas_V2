@@ -30,7 +30,9 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity Transmitter_Core is
-    Port ( Data_TX : in  STD_LOGIC_VECTOR (7 downto 0);
+    Port ( RST : in STD_LOGIC;
+			  CLK : in STD_LOGIC;
+			  Data_TX : in  STD_LOGIC_VECTOR (7 downto 0);
            Send : in  STD_LOGIC;
            TX : out  STD_LOGIC);
 end Transmitter_Core;

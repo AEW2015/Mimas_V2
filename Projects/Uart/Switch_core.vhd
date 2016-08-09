@@ -52,7 +52,7 @@ inverted_switch <= not GPIO_Switch;
 -- need to figure out how to debounce the best way...
 Switch_0 : button_debounce
 	port map(
-			RST => rst,
+			RST => RST,
 			CLK =>CLk,
 			Button_in =>inverted_switch(0),
 			Button_out => Switch_Out(0)
