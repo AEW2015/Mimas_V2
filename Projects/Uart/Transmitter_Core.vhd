@@ -34,6 +34,7 @@ entity Transmitter_Core is
 			  CLK : in STD_LOGIC;
 			  Data_TX : in  STD_LOGIC_VECTOR (7 downto 0);
            Send : in  STD_LOGIC;
+			  TX_busy : out  STD_LOGIC;
            TX : out  STD_LOGIC);
 end Transmitter_Core;
 

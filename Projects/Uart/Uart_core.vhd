@@ -30,6 +30,9 @@ use IEEE.NUMERIC_STD.ALL;
 --use UNISIM.VComponents.all;
 
 entity Uart_core is
+	 Generic (
+				CLK_RATE: natural :=100_000_000;
+				BAUD_RATE: natural :=9_600);
     Port ( 
 			  RST : in STD_LOGIC;
 			  CLK : in STD_LOGIC;
@@ -37,6 +40,7 @@ entity Uart_core is
            Data_RX : out  STD_LOGIC_VECTOR (7 downto 0);
            Send : in  STD_LOGIC;
 			  RX : in  STD_LOGIC;
+			  TX_busy : out  STD_LOGIC;
 			  TX : out  STD_LOGIC;
            Rec : out  STD_LOGIC);
 end Uart_core;
@@ -48,6 +52,7 @@ component Transmitter_Core is
 			CLK : in STD_LOGIC;
 			Data_TX : in  STD_LOGIC_VECTOR (7 downto 0);
          Send : in  STD_LOGIC;
+			TX_busy : out  STD_LOGIC;
          TX : out  STD_LOGIC
 			);
 end component;
@@ -60,6 +65,25 @@ component Reciever_Core is
          RX : in  STD_LOGIC
 			);
 end component;
+-----------------------------------------------
+function log2c (n: integer) return integer is 
+variable m, p: integer; 
+begin 
+m := 0; 
+p := 1; 
+while p < n loop 
+m := m + 1; 
+p := p * 2; 
+end loop; 
+return m; 
+end log2c;
+---------------------------------------------------
+constant BIT_COUNTER_MAX_VAL : Natural := CLK_RATE/BAUD_RATE/16 - 1;
+constant BIT_COUNTER_BITS : Natural := log2c(BIT_COUNTER_MAX_VAL);
+
+
+
+
 begin
 Transmitter_Core_i : Transmitter_Core
     Port map( 
@@ -67,6 +91,7 @@ Transmitter_Core_i : Transmitter_Core
 			CLK =>CLk,
 			Data_TX => Data_TX,
 			Send => Send,
+			TX_busy => TX_busy,
 			TX  => TX
 	);
 Reciever_Core_i : Reciever_Core

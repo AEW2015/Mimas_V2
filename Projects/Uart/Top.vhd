@@ -34,6 +34,8 @@ entity Top is
     Port ( 
 			CLK_100MHz : in STD_LOGIC;
 			CLK_12MHz : in STD_LOGIC;
+			UART_RX : in STD_LOGIC;
+			UART_TX : out STD_LOGIC;
 			GPIO_LED : out  STD_LOGIC_VECTOR (7 downto 0);
 			GPIO_DPSwitch: in STD_LOGIC_VECTOR(7 downto 0);
 			GPIO_Switch : in STD_LOGIC_VECTOR(5 downto 0);
@@ -46,6 +48,9 @@ end Top;
 
 
 architecture Behavioral of Top is
+constant CLOCK_RATE : Natural := 100_000_000;
+constant BAUD_RATE : Natural := 19_200;
+
 component LED_control is
 	port( 
 			RST : in STD_LOGIC;
@@ -78,6 +83,9 @@ component seven_segment_core is
            Enable_out : out  STD_LOGIC_VECTOR (2 downto 0));
 end component;
 component Uart_core is
+	 Generic (
+			CLK_RATE: natural :=100_000_000;
+			BAUD_RATE: natural :=9_600);
     Port ( 
 	 		  RST : in STD_LOGIC;
 			  CLK : in STD_LOGIC;
@@ -85,6 +93,7 @@ component Uart_core is
            Data_RX : out  STD_LOGIC_VECTOR (7 downto 0);
            Send : in  STD_LOGIC;
 			  RX : in  STD_LOGIC;
+			  TX_busy : out  STD_LOGIC;
 			  TX : out  STD_LOGIC;
            Rec : out  STD_LOGIC);
 end component;
@@ -126,14 +135,19 @@ counter_next<=counter+1;
 led_input <= x"FFFFFFFF";
 
 Uart_core_i : Uart_core
+	Generic Map(
+		CLK_RATE => CLOCK_RATE,
+		BAUD_RATE => BAUD_RATE
+	)
     Port map( 
 			RST => RST,
 			CLK => CLK_100MHz,
 			Data_TX => "11111111",
          Data_RX => open,
          Send => '0',
-			RX => '1',
-			TX => open,
+			RX => UART_RX,
+			TX_busy => open,
+			TX => UART_TX,
          Rec => open
 	);
 
