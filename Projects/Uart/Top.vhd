@@ -49,7 +49,7 @@ end Top;
 
 architecture Behavioral of Top is
 constant CLOCK_RATE : Natural := 100_000_000;
-constant BAUD_RATE : Natural := 19_200;
+constant BAUD_RATE : Natural := 19_000;
 
 component LED_control is
 	port( 
@@ -85,7 +85,7 @@ end component;
 component Uart_core is
 	 Generic (
 			CLK_RATE: natural :=100_000_000;
-			BAUD_RATE: natural :=9_600);
+			BAUD_RATE: natural :=19_200);
     Port ( 
 	 		  RST : in STD_LOGIC;
 			  CLK : in STD_LOGIC;
@@ -94,6 +94,7 @@ component Uart_core is
            Send : in  STD_LOGIC;
 			  RX : in  STD_LOGIC;
 			  TX_busy : out  STD_LOGIC;
+			  RX_busy : out  STD_LOGIC;
 			  TX : out  STD_LOGIC;
            Rec : out  STD_LOGIC);
 end component;
@@ -101,7 +102,7 @@ end component;
 
 
 
-signal rst : STD_LOGIC;
+signal rst, busy_send, rec_send : STD_LOGIC;
 
 signal DPSwitch, tmp : STD_LOGIC_VECTOR (7 downto 0);
 signal led_input : STD_LOGIC_VECTOR(31 downto 0) := X"0257ACEF";
@@ -142,13 +143,14 @@ Uart_core_i : Uart_core
     Port map( 
 			RST => RST,
 			CLK => CLK_100MHz,
-			Data_TX => "11111111",
-         Data_RX => open,
-         Send => '0',
+			Data_TX => tmp,
+         Data_RX => tmp,
+         Send => rec_send,
 			RX => UART_RX,
-			TX_busy => open,
+			TX_busy => busy_send,
+			RX_busy => open,
 			TX => UART_TX,
-         Rec => open
+         Rec => rec_send
 	);
 
 
@@ -156,8 +158,8 @@ seven_core_i : seven_segment_core
     Port map( 
 			RST => RST,
 			CLK => CLK_100MHz,
-			Data_in => DPSwitch & DPSwitch,
-			Dp_in  => "101",
+			Data_in => "10000000" & tmp,
+			Dp_in  => "000",
 			Seven_out => SevenSegment,
 			Dp_out => DPout,
 			Enable_out => SevenSegmentEnable

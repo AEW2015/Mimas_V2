@@ -100,3 +100,5 @@ Temporary Items
 *.ini
 Projects/GPIO_test/isim/button_debounce_isim_beh.exe.sim/tmp_save/_1
 Projects/GPIO_test/isim/pn_info
+Projects/Uart/isim/Transmitter_Core_isim_beh.exe.sim/tmp_save/_1
+Projects/Uart/isim/pn_info

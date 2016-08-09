@@ -31,9 +31,11 @@ use IEEE.NUMERIC_STD.ALL;
 --use UNISIM.VComponents.all;
 
 entity Transmitter_Core is
+	Generic (
+				CLK_RATE: natural :=100_000_000;
+				BAUD_RATE: natural :=19_200);
     Port ( RST : in STD_LOGIC;
 			  CLK : in STD_LOGIC;
-			  BIT_EN : in STD_LOGIC;
 			  Data_TX : in  STD_LOGIC_VECTOR (7 downto 0);
            Send : in  STD_LOGIC;
 			  TX_busy : out  STD_LOGIC;
@@ -41,40 +43,48 @@ entity Transmitter_Core is
 end Transmitter_Core;
 
 architecture Behavioral of Transmitter_Core is
-constant BIT_COUNTER_MAX_VAL : Natural := 15;
-type fsm is (IDLE,STRT,DATA,STP,RETRN);
+
+-----------------------------------------------
+function log2c (n: integer) return integer is 
+variable m, p: integer; 
+begin 
+m := 0; 
+p := 1; 
+while p < n loop 
+m := m + 1; 
+p := p * 2; 
+end loop; 
+return m; 
+end log2c;
+---------------------------------------------------
+type fsm is (IDLE,STRT,B0,B1,B2,B3,B4,B5,B6,B7,STP,RETRN);
 signal state,state_next: fsm;
+constant BIT_COUNTER_MAX_VAL : Natural := CLK_RATE / BAUD_RATE - 1;
+constant BIT_COUNTER_BITS : Natural := log2c(BIT_COUNTER_MAX_VAL);signal bit_timer,bit_timer_next : unsigned(BIT_COUNTER_BITS-1 downto 0);
 signal reg, reg_next : std_logic_vector(7 downto 0);
-
-signal bit_counter, bit_counter_next : unsigned(7 downto 0);
-
 signal tx_reg: std_logic:='1';
 signal tx_reg_next: std_logic;
 signal tx_bit,shift,load,stop,start,shift_out,clrTimer: std_logic;
 
 begin
-------------------------
--------CLK LOGIC--------
-------------------------
 	process(rst,clk)
 	begin
 		if(rst ='1') then
 			state <= IDLE;
-			bit_counter<= (others=>'0');
+			bit_timer<= (others=>'0');
 			reg<=(others=>'0');
 			tx_reg<='1';
 		elsif (clk'event and clk = '1') then
 			state<=state_next;
-			bit_counter<=bit_counter_next;
+			bit_timer<=bit_timer_next;
 			reg<=reg_next;
 			tx_reg<=tx_reg_next;
 		end if;
 	end process;
-	
---------------------------
----FSM NEXT STATE LOGIC---
---------------------------
-	process(Send,state,tx_bit,end_data_flag)
+------------------------
+--FSM NEXT STATE LOGIC--
+------------------------
+	process(Send,state,tx_bit)
 	begin
 		shift <= '0';
 		load <= '0';
@@ -96,17 +106,66 @@ begin
 			when STRT =>
 				start <= '1';
 				if (tx_bit = '1') then
-					state_next <= DATA;
+					state_next <= B0;
 				else
 					state_next <= STRT;
 				end if;
-			when DATA =>
+			when B0 =>
 				if (tx_bit = '1') then
+					state_next <= B1;
 					shift <= '1';
-				elsif (end_data_flag = '1')
 				else
-					state_next <= DATA;
+					state_next <= B0;
 				end if;
+			when B1 =>
+				if (tx_bit = '1') then
+					state_next <= B2;
+					shift <= '1';
+				else
+					state_next <= B1;
+				end if;
+			when B2 =>
+				if (tx_bit = '1') then
+					state_next <= B3;
+					shift <= '1';
+				else
+					state_next <= B2;
+				end if;
+			when B3 =>
+				if (tx_bit = '1') then
+					state_next <= B4;
+					shift <= '1';
+				else
+					state_next <= B3;
+				end if;
+			when B4 =>
+				if (tx_bit = '1') then
+					state_next <= B5;
+					shift <= '1';
+				else
+					state_next <= B4;
+				end if;
+			when B5 =>
+				if (tx_bit = '1') then
+					state_next <= B6;
+					shift <= '1';
+				else
+					state_next <= B5;
+				end if;
+			when B6 =>
+				if (tx_bit = '1') then
+					state_next <= B7;
+					shift <= '1';
+				else
+					state_next <= B6;
+				end if;
+			when B7 =>
+				if (tx_bit = '1') then
+					state_next <= STP;
+					shift <= '1';
+				else
+					state_next <= B7;
+				end if;		
 			when STP =>
 				stop<= '1';
 				if (tx_bit = '1') then
@@ -116,7 +175,6 @@ begin
 				end if;	
 			when RETRN =>
 				stop<= '1';
-				--only one byte at a time?
 				if (Send = '0') then
 					state_next <= IDLE;
 				else
@@ -124,33 +182,13 @@ begin
 				end if;
 		end case;
 	end process;
-	
 ----------------------------------------
--------COUNTER NEXT STATE LOGIC---------
+--COUNTER NEXT STATE LOGIC--------------
 ----------------------------------------
-process (bit_counter,BIT_EN,clrTimer)
-begin
-	bit_counter_next<=bit_counter;
-	tx_bit <= '0';
-	end_data_flag <= '0';
-	
-	
-	if (BIT_EN = '1') then
-		bit_counter_next<=bit_counter+1;
-		if(bit_counter(3 downto 0) = 15) then
-			tx_bit <= '1';
-			if(bit_counter(6 downto 4) = 8) then
-				end_data_flag <= '1';
-			end if;
-		end if;
-	end if;
-
-end process;
-
-						
-						
-						
-						
+bit_timer_next<= (others=>'0') when (clrTimer='1' or bit_timer = BIT_COUNTER_MAX_VAL) else
+						bit_timer+1;
+tx_bit <= '1' when bit_timer = BIT_COUNTER_MAX_VAL else
+				'0';
 						
 reg_next <= Data_TX when load = '1' else
 				'0' & reg(7 downto 1) when shift='1' else
@@ -163,9 +201,9 @@ tx_reg_next<= '1' when stop = '1' else
 				
 
 ----------------------
--------outputs--------
-----------------------
-TX<= tx_reg;	
+--outputs
+TX<= tx_reg;
+	
 	
 	
 
