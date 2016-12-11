@@ -6,6 +6,10 @@ ReBooting Project 7/21/2016.
 
 The Goal is design a working processor for Mimas V2
 
+Project Stopped due to poor UART
+
+Moving to PYNQ
+
 ## Info
 
 I will keep all my files for the Mimas V2 on here
