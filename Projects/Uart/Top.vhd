@@ -49,7 +49,7 @@ end Top;
 
 architecture Behavioral of Top is
 constant CLOCK_RATE : Natural := 100_000_000;
-constant BAUD_RATE : Natural := 19_000;
+constant BAUD_RATE : Natural := 19_200;
 
 component LED_control is
 	port( 

@@ -37,6 +37,8 @@ entity Top is
 			GPIO_LED : out  STD_LOGIC_VECTOR (7 downto 0);
 			GPIO_DPSwitch: in STD_LOGIC_VECTOR(7 downto 0);
 			SYS_RST: in STD_LOGIC;
+			ARRAY_OUT : out  STD_LOGIC_VECTOR (15 downto 0);
+			LEVEL_OUT : out STD_LOGIC_VECTOR (3 downto 0);
 			GPIO_Switch : in STD_LOGIC_VECTOR(5 downto 0)
 		);
 end Top;
@@ -65,10 +67,18 @@ component DPSwitch_core is
            DPSwitch_out : out  STD_LOGIC_VECTOR (7 downto 0)
 		   );
 end component;
-
+component led_tower is
+	port(
+		CLK : in  STD_LOGIC;
+      RST : in  STD_LOGIC;
+      DATA_IN : in  STD_LOGIC_VECTOR (63 downto 0);
+      ARRAY_OUT : out  STD_LOGIC_VECTOR (15 downto 0);
+      LEVEL_OUT : out  STD_LOGIC_VECTOR (3 downto 0)
+		);
+end component;
 signal rst : STD_LOGIC;
 
-signal DPSwitch,tmp_GPIO_LED : STD_LOGIC_VECTOR (7 downto 0);
+signal DPSwitch,tmp_GPIO_LED,tmp_led_out : STD_LOGIC_VECTOR (7 downto 0);
 signal led_input : STD_LOGIC_VECTOR(31 downto 0) := X"0257ACEF";
 signal counter, counter_next : unsigned(51 downto 0) := (others=>'0');
 signal Switch : STD_LOGIC_VECTOR(5 downto 0);
@@ -98,13 +108,21 @@ counter_next<=counter+1;
 
 
 GPIO_LED <= '1' & tmp_GPIO_LED(6 downto 0);
-
 led_input <= x"FFFFFFFF" when Switch(1) = '1' else
 					x"FEDCBA98" when Switch(2) = '1' else
 					x"01234567" when Switch(3) = '1' else
 					not STD_LOGIC_VECTOR(counter(49 downto 18)) when Switch(4) = '1' else
 					x"DEADBEEF" when Switch(5) = '1' else
 					STD_LOGIC_VECTOR(counter(49 downto 18));
+
+led_tower_i : led_tower
+	port map(
+	RST => rst,
+	CLK =>CLK_100MHz,
+	DATA_IN =>x"FFFF00000000FFFF",
+	ARRAY_OUT => ARRAY_OUT,
+	LEVEL_OUT =>LEVEL_OUT
+	);
 
 
 led_control_i : LED_control
@@ -115,6 +133,7 @@ led_control_i : LED_control
 			LED_en => DPSwitch,
 			GPIO_LED =>tmp_GPIO_LED
 	);
+
 switch_core_i : Switch_core
 	port map(
 			RST => rst,
